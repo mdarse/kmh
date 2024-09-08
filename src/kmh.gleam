@@ -7,7 +7,7 @@ import gleam/result
 /// multiplicative hashing algorithm.
 ///
 /// - The hash function is bijective, meaning that it maps a number to a number
-/// between 0 and the max_value.
+/// between 0 and the *maximum value*.
 /// - The hash function is deterministic, meaning that it always generates the
 /// same output for the same input.
 /// - The hash function is collision resistant, meaning that it is impossible to
@@ -30,7 +30,7 @@ pub type Valid
 ///
 /// - The `prime` is a prime number.
 /// - The `mod_inverse` is the modular multiplicative inverse of the `prime`.
-/// - The `random` value is a random number between 0 and the `max_value`.
+/// - The `random` value is a random number between 0 and the *maximum value*.
 pub fn new(
   prime prime: Int,
   mod_inverse mod_inverse: Int,
@@ -40,9 +40,10 @@ pub fn new(
 }
 
 /// Set the maximum size (in bits) of the values that can be generated.
-/// Defaults to 31 bits.
 ///
-/// This must be called before `validate`.
+/// Defaults to **31** bits, leading to a *maximum value* of **2^31 - 1**.
+///
+/// **Note:** This must be called before `validate`.
 pub fn max_size(h: Hasher(Unvalidated), max_size: Int) -> Hasher(Unvalidated) {
   Hasher(..h, max_value: max_uint_value(max_size))
 }
@@ -90,7 +91,7 @@ fn is_prime(number: Int) -> Bool
 
 /// Encode a number.
 ///
-/// The number must be between 0 and the max_value.
+/// The number must be between 0 and the *maximum value*.
 pub fn encode(h: Hasher(Valid), number: Int) -> Int {
   number
   |> int.multiply(h.prime)
@@ -100,7 +101,7 @@ pub fn encode(h: Hasher(Valid), number: Int) -> Int {
 
 /// Decode a number.
 ///
-/// The encoded value must be between 0 and the max_value.
+/// The encoded value must be between 0 and the *maximum value*.
 pub fn decode(h: Hasher(Valid), number: Int) -> Int {
   number
   |> int.bitwise_exclusive_or(h.random)
